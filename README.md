@@ -3,7 +3,7 @@ frontendGruntTasks
 
 # Description
 
-利用grunt來做到html, css, js檔案每次在儲存時，會自動格式美化與驗證是否有錯誤,
+利用grunt來做到html, css, js檔案每次在儲存時，會自動格式美化與驗證是否有錯誤.
 
 總共有以下執行模式: 
 
@@ -33,8 +33,13 @@ npm install
 ### step2: execute grunt
 
 ```
-grunt watch:normal   // or watch:sass
+grunt normal   // or grunt sass
 
 ```
 
 ### step3: use & enjoy it! :)
+預設的網址為: 0.0.0.0:8000, <br>
+瀏覽器會在你儲存後及時更新這個domain的檔案，因此可以及時預覽剛剛修改的變化:)
+
+your default local server location: 0.0.0.0:8000, <br>
+browser will livereload after you saved files, and you can see the changes on browser:)

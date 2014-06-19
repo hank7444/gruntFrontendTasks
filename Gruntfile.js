@@ -1,5 +1,18 @@
 module.exports = function(grunt) {
 
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+
+    grunt.loadNpmTasks('grunt-jsbeautifier'); // js prettify
+    grunt.loadNpmTasks('grunt-contrib-jshint'); // js hint
+    grunt.loadNpmTasks('grunt-prettify'); // html prettify
+    grunt.loadNpmTasks('grunt-html-validation'); // html hint
+    grunt.loadNpmTasks('grunt-cssbeautifier'); // css prettify
+    grunt.loadNpmTasks('grunt-contrib-csslint'); // css hint
+
+
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -15,9 +28,20 @@ module.exports = function(grunt) {
                     'prettify:normal', 'validation:normal',
                 ],
                 options: {
-                    nospawn: true,
+                    livereload: true,
+                    nospawn: true
                 },
             },
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 8000,
+                    hostname: '0.0.0.0',
+                    //keepalive: true,
+                    //livereload: true,
+                }
+            }
         },
         prettify: {
             options: {
@@ -87,19 +111,10 @@ module.exports = function(grunt) {
     });
 
 
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-
-    grunt.loadNpmTasks('grunt-jsbeautifier'); // js prettify
-    grunt.loadNpmTasks('grunt-contrib-jshint'); // js hint
-    grunt.loadNpmTasks('grunt-prettify'); // html prettify
-    grunt.loadNpmTasks('grunt-html-validation'); // html hint
-    grunt.loadNpmTasks('grunt-cssbeautifier'); // css prettify
-    grunt.loadNpmTasks('grunt-contrib-csslint'); // css hint
 
     // Default task(s).
-    //grunt.registerTask('default', ['uglify']);
+    grunt.registerTask('normal', ['connect', 'watch:normal']);
+    //grunt.registerTask('sass', ['connect', 'watch:normal']);
 
     var htmlNonePath = 'none/none.html';
     var defaultNonepath = 'notexist/*.notexist';

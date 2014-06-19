@@ -9,6 +9,7 @@
     "grunt-contrib-nodeunit": "~0.2.2",
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-contrib-concat": "*",
+    "grunt-contrib-connect": "*",
 
     "grunt-jsbeautifier": "*",
     "grunt-prettify": "*", 
