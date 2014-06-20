@@ -4,6 +4,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-compass');
 
     grunt.loadNpmTasks('grunt-jsbeautifier'); // js prettify
     grunt.loadNpmTasks('grunt-contrib-jshint'); // js hint
@@ -32,6 +33,18 @@ module.exports = function(grunt) {
                     nospawn: true
                 },
             },
+            sass: {
+                files: ['html/**/*.html', 'css/**/*.css', 'sass/**/*.sass', 'js/**/*.js'],
+                tasks: [
+                    'compass:sass', 'cssbeautifier:normal', 'csslint:normal',
+                    'jsbeautifier:normal', 'jshint:normal',
+                    'prettify:normal', 'validation:normal',
+                ],
+                options: {
+                    livereload: true,
+                    nospawn: true
+                },
+            }
         },
         connect: {
             server: {
@@ -39,7 +52,16 @@ module.exports = function(grunt) {
                     port: 8000,
                     hostname: '0.0.0.0',
                     //keepalive: true,
-                    //livereload: true,
+                    livereload: true,
+                }
+            }
+        },
+        compass: {
+            sass: {
+                options: {
+                    config: 'config.rb',
+                    /*sassDir: 'sass',
+                    cssDir: 'css'*/
                 }
             }
         },
@@ -57,11 +79,12 @@ module.exports = function(grunt) {
         },
         validation: {
             options: {
-                reset: true, //grunt.option('reset') 
+                reset: true, //true, //grunt.option('reset') 
                 stoponerror: true,
                 relaxerror: ['Bad value X-UA-Compatible for attribute http-equiv on element meta.',
                     'Element title must not be empty.'
-                ]
+                ],
+                reportpath: false,
             },
             normal: {
                 src: 'none/none.html'
@@ -92,12 +115,12 @@ module.exports = function(grunt) {
             }
         },
         cssbeautifier: {
-            normal: '',
             options: {
-                indent: '    ',
+                indent: '  ',
                 openbrace: 'end-of-line',
                 autosemicolon: false
-            }
+            },
+            normal: ''
         },
         csslint: {
             normal: {
@@ -111,39 +134,44 @@ module.exports = function(grunt) {
     });
 
 
-
     // Default task(s).
     grunt.registerTask('normal', ['connect', 'watch:normal']);
-    //grunt.registerTask('sass', ['connect', 'watch:normal']);
+    grunt.registerTask('sass', ['connect', 'watch:sass']);
 
-    var htmlNonePath = 'none/none.html';
+    var htmlNonePath = '';
     var defaultNonepath = 'notexist/*.notexist';
-    var targetHash = {
+    var normalTaskAry = [{
+        name: 'validation.normal.src',
+        path: htmlNonePath
+    }, {
+        name: 'prettify.normal.src',
+        path: defaultNonepath
+    }, {
+        name: 'prettify.normal.dest',
+        path: defaultNonepath
+    }, {
+        name: 'cssbeautifier.normal',
+        path: defaultNonepath
+    }, {
+        name: 'csslint.normal.src',
+        path: defaultNonepath
+    }, {
+        name: 'jsbeautifier.normal.src',
+        path: defaultNonepath
+    }, {
+        name: 'jshint.normal.src',
+        path: defaultNonepath
+    }];
+    var sassTaskAry = normalTaskAry.slice(0).push[{
+        name: 'compass.sass',
+        path: defaultNonepath
+    }];
 
-        // 美化格式, 驗證css, js, html
-        'normal': [{
-            name: 'validation.normal.src',
-            path: htmlNonePath
-        }, {
-            name: 'prettify.normal.src',
-            path: defaultNonepath
-        }, {
-            name: 'prettify.normal.dest',
-            path: defaultNonepath
-        }, {
-            name: 'cssbeautifier.normal',
-            path: defaultNonepath
-        }, {
-            name: 'csslint.normal.src',
-            path: defaultNonepath
-        }, {
-            name: 'jsbeautifier.normal.src',
-            path: defaultNonepath
-        }, {
-            name: 'jshint.normal.src',
-            path: defaultNonepath
-        }],
-        'sass': [],
+    //grunt.log.writeln(sassTaskAry);
+
+    var targetHash = {
+        'normal': normalTaskAry,
+        'sass': normalTaskAry,
         'test': []
     };
 
@@ -153,7 +181,6 @@ module.exports = function(grunt) {
             tasksAry.forEach(function(task) {
 
                 if (filePathUseTasksNameAry[task.name]) {
-                    grunt.log.writeln('task.name: ' + task.name);
                     grunt.config(task.name, filepath);
                 } else {
                     grunt.config(task.name, task.path);
@@ -174,6 +201,9 @@ module.exports = function(grunt) {
             'js': {
                 'jsbeautifier.normal.src': true,
                 'jshint.normal.src': true,
+            },
+            'sass': {
+                'compass.sass': true
             }
         };
         return function(extension, tasksAry, filepath) {
@@ -190,7 +220,7 @@ module.exports = function(grunt) {
         var target = target;
         var extension = filepath.substr(filepath.lastIndexOf('.') + 1);
         var data = targetHash[target];
+
         tasksInit(extension, data, filepath);
     });
-
 };

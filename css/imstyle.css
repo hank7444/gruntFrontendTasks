@@ -1,0 +1,30 @@
+.sprites-sprite, .sprites-error, .sprites-success {
+  background-image: url('../images/sprites-s6e40db2fef.png');
+  background-repeat: no-repeat;
+}
+
+.sprites-error {
+  background-position: 0 0;
+}
+
+.sprites-success {
+  background-position: 0 -24px;
+}
+
+body {
+  color: brown;
+  font-size: 15px;
+}
+
+.header {
+  color: red;
+}
+
+.content {
+  color: pink;
+}
+
+.footer {
+  color: red;
+  margin: 10px;
+}

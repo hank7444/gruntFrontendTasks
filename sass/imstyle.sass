@@ -1,0 +1,26 @@
+@charset "UTF-8"
+
+
+
+@import compass
+
+
+
+// 將圖片轉成sprite
+// folderName-layout 水平還是垂直排列
+// folderName-spacing 圖片間距
+// 只支援png
+// include all-folderName-sprites 將圖片位置轉成對應的css
+$sprite-layout: horizontal
+$sprite-spacing: 20px  
+@import "sprites/*.png"
+@include all-sprites-sprites
+
+
+body 
+	color: brown
+	font-size: 15px
+
+@import header
+@import content
+@import footer
