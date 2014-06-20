@@ -8,7 +8,7 @@ frontendGruntTasks
 總共有以下執行模式: 
 
 * normal: 會對js/, css/, html/ 資料夾底下的檔案監聽，每次儲存會對該儲存的檔案進行格式美化與驗證
-* sass(未實作): 會對js/, sass/, html/ 資料夾底下的檔案監聽, sass儲存會轉成css, js, html同normal模式
+* sass: 會對js/, sass/, css/, html/ 資料夾底下的檔案監聽, sass儲存會轉成css, 其他同normal模式
 
 ===
 
