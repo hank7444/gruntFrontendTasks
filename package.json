@@ -12,6 +12,8 @@
     "grunt-contrib-connect": "*",
     "grunt-contrib-compass": "*",
 
+
+    "grunt-focus": "*",
     "grunt-jsbeautifier": "*",
     "grunt-prettify": "*", 
     "grunt-html-validation": "*",

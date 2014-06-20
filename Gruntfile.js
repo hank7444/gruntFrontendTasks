@@ -6,6 +6,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
 
+    grunt.loadNpmTasks('grunt-focus');
     grunt.loadNpmTasks('grunt-jsbeautifier'); // js prettify
     grunt.loadNpmTasks('grunt-contrib-jshint'); // js hint
     grunt.loadNpmTasks('grunt-prettify'); // html prettify
@@ -13,37 +14,50 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-cssbeautifier'); // css prettify
     grunt.loadNpmTasks('grunt-contrib-csslint'); // css hint
 
-
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        watch: {
+        focus: {
             normal: {
-                files: ['html/**/*.html', 'css/**/*.css', 'js/**/*.js'],
-
-                // NOTE: vlidation need to be after others, if not, it's will unavliable when you save .css or .js, and
-                // back to save .html.
-                tasks: [
-                    'cssbeautifier:normal', 'csslint:normal',
-                    'jsbeautifier:normal', 'jshint:normal',
-                    'prettify:normal', 'validation:normal',
-                ],
-                options: {
-                    livereload: true,
-                    nospawn: true
-                },
+                include: ['js', 'css', 'html']
             },
             sass: {
-                files: ['html/**/*.html', 'css/**/*.css', 'sass/**/*.sass', 'js/**/*.js'],
-                tasks: [
-                    'compass:sass', 'cssbeautifier:normal', 'csslint:normal',
-                    'jsbeautifier:normal', 'jshint:normal',
-                    'prettify:normal', 'validation:normal',
-                ],
+                include: ['js', 'css', 'html', 'sass']
+            }
+        },
+        watch: {
+
+            js: {
                 options: {
                     livereload: true,
                     nospawn: true
                 },
+                files: ['js/**/*.js'],
+                tasks: ['jsbeautifier:normal', 'jshint:normal'],
+            },
+            css: {
+                options: {
+                    livereload: true,
+                    nospawn: true
+                },
+                files: ['css/**/*.css'],
+                tasks: ['cssbeautifier:normal', 'csslint:normal']
+            },
+            html: {
+                options: {
+                    livereload: true,
+                    nospawn: true
+                },
+                files: ['html/**/*.html'],
+                tasks: ['prettify:normal', 'validation:normal']
+            },
+            sass: {
+                options: {
+                    livereload: true,
+                    nospawn: true
+                },
+                files: ['sass/**/*.sass'],
+                tasks: ['compass:sass']
             }
         },
         connect: {
@@ -87,7 +101,7 @@ module.exports = function(grunt) {
                 reportpath: false,
             },
             normal: {
-                src: 'none/none.html'
+                src: 'html/*.html'
             }
         },
         jsbeautifier: {
@@ -133,94 +147,27 @@ module.exports = function(grunt) {
         }
     });
 
-
     // Default task(s).
-    grunt.registerTask('normal', ['connect', 'watch:normal']);
-    grunt.registerTask('sass', ['connect', 'watch:sass']);
-
-    var htmlNonePath = '';
-    var defaultNonepath = 'notexist/*.notexist';
-    var normalTaskAry = [{
-        name: 'validation.normal.src',
-        path: htmlNonePath
-    }, {
-        name: 'prettify.normal.src',
-        path: defaultNonepath
-    }, {
-        name: 'prettify.normal.dest',
-        path: defaultNonepath
-    }, {
-        name: 'cssbeautifier.normal',
-        path: defaultNonepath
-    }, {
-        name: 'csslint.normal.src',
-        path: defaultNonepath
-    }, {
-        name: 'jsbeautifier.normal.src',
-        path: defaultNonepath
-    }, {
-        name: 'jshint.normal.src',
-        path: defaultNonepath
-    }];
-    var sassTaskAry = normalTaskAry.slice(0).push[{
-        name: 'compass.sass',
-        path: defaultNonepath
-    }];
-
-    //grunt.log.writeln(sassTaskAry);
+    grunt.registerTask('normal', ['connect', 'focus:normal']);
+    grunt.registerTask('sass', ['connect', 'focus:sass']);
 
     var targetHash = {
-        'normal': normalTaskAry,
-        'sass': normalTaskAry,
-        'test': []
+        'js': ['jsbeautifier.normal.src', 'jshint.normal.src'],
+        'css': ['cssbeautifier.normal', 'csslint.normal.src'],
+        'html': ['validation.normal.src', 'prettify.normal.src', 'prettify.normal.dest'],
+        'sass': ['compass.sass']
     };
-
-    var tasksInit = (function() {
-
-        var setTaskConfig = function(filePathUseTasksNameAry, tasksAry, filepath) {
-            tasksAry.forEach(function(task) {
-
-                if (filePathUseTasksNameAry[task.name]) {
-                    grunt.config(task.name, filepath);
-                } else {
-                    grunt.config(task.name, task.path);
-                }
-            });
-        };
-        var fileTypeHash = {
-
-            'html': {
-                'validation.normal.src': true,
-                'prettify.normal.src': true,
-                'prettify.normal.dest': true
-            },
-            'css': {
-                'cssbeautifier.normal': true,
-                'csslint.normal.src': true,
-            },
-            'js': {
-                'jsbeautifier.normal.src': true,
-                'jshint.normal.src': true,
-            },
-            'sass': {
-                'compass.sass': true
-            }
-        };
-        return function(extension, tasksAry, filepath) {
-
-            var filePathUseTasksNameAry = fileTypeHash[extension];
-            setTaskConfig(filePathUseTasksNameAry, tasksAry, filepath);
-        };
-    })();
-
+    var tasksInit = function(tasksAry, filepath) {
+        tasksAry.forEach(function(task) {
+            grunt.config(task, filepath);
+        });
+    };
 
     // 只對目前變動的檔案作處理
     grunt.event.on('watch', function(action, filepath, target) {
 
         var target = target;
-        var extension = filepath.substr(filepath.lastIndexOf('.') + 1);
-        var data = targetHash[target];
-
-        tasksInit(extension, data, filepath);
+        var tasksAry = targetHash[target];
+        tasksInit(tasksAry, filepath);
     });
 };
