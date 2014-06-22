@@ -1,6 +1,6 @@
 function doSomething(a, b) {
 
-    var bbb = 0;
+    var bbb = 2;
 
     return a + b;
 }

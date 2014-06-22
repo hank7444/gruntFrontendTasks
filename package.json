@@ -11,14 +11,12 @@
     "grunt-contrib-concat": "*",
     "grunt-contrib-connect": "*",
     "grunt-contrib-compass": "*",
-
-
+    "grunt-browser-sync": "*",
     "grunt-focus": "*",
     "grunt-jsbeautifier": "*",
     "grunt-prettify": "*", 
     "grunt-html-validation": "*",
     "grunt-contrib-csslint": "*",
     "grunt-cssbeautifier": "*"
-
   }
 }

@@ -3,8 +3,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-browser-sync');
 
     grunt.loadNpmTasks('grunt-focus');
     grunt.loadNpmTasks('grunt-jsbeautifier'); // js prettify
@@ -19,11 +19,8 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         focus: {
             normal: {
-                include: ['js', 'css', 'html']
-            },
-            sass: {
                 include: ['js', 'css', 'html', 'sass']
-            }
+            },
         },
         watch: {
 
@@ -60,16 +57,6 @@ module.exports = function(grunt) {
                 tasks: ['compass:sass']
             }
         },
-        connect: {
-            server: {
-                options: {
-                    port: 8000,
-                    hostname: '0.0.0.0',
-                    //keepalive: true,
-                    livereload: true,
-                }
-            }
-        },
         compass: {
             sass: {
                 options: {
@@ -78,6 +65,38 @@ module.exports = function(grunt) {
                     cssDir: 'css'*/
                 }
             }
+        },
+        browserSync: {
+            dev: {
+                bsFiles: {
+                    src: [
+                        'js/**/*.js',
+                        'html/**/*.html',
+                        'css/**/*.css',
+                        'sass/**/*.sass',
+                        'sass/**/*.scss'
+                    ]
+                },
+                options: {
+                    server: {
+                        baseDir: "./",
+                        directory: false
+                    },
+                    host: "localhost",
+                    ports: {
+                        min: 3000,
+                        max: 3100
+                    },
+                    debugInfo: true,
+                    open: false,
+                    browser: ["google chrome", "firefox"],
+                    injectChanges: true,
+                    notify: true,
+                    watchTask: true
+                },
+
+            }
+
         },
         prettify: {
             options: {
@@ -148,8 +167,9 @@ module.exports = function(grunt) {
     });
 
     // Default task(s).
-    grunt.registerTask('normal', ['connect', 'focus:normal']);
-    grunt.registerTask('sass', ['connect', 'focus:sass']);
+    grunt.registerTask('default', ['focus:normal']);
+    grunt.registerTask('livereload', ['browserSync', 'focus:normal']);
+
 
     var targetHash = {
         'js': ['jsbeautifier.normal.src', 'jshint.normal.src'],
